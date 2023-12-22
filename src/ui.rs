@@ -1,8 +1,7 @@
 use ratatui::{
-    layout::Alignment,
-    style::{Color, Style},
-    widgets::{Block, BorderType, Borders, Paragraph, canvas::*},
+    style::Color,
     symbols::Marker,
+    widgets::{canvas::*, Block, Borders},
     Frame,
 };
 
@@ -35,7 +34,11 @@ pub fn render(app: &mut App, frame: &mut Frame) {
         frame.size(),
     )
     */
-    let points: Vec<(f64, f64)> = app.snake_points.iter().map(|point| { (point.0 as f64, point.1 as f64) }).collect();
+    let points: Vec<(f64, f64)> = app
+        .snake_points
+        .iter()
+        .map(|point| (point.0 as f64, point.1 as f64))
+        .collect();
     frame.render_widget(
         Canvas::default()
             .block(Block::default().borders(Borders::ALL).title("Snake"))
@@ -56,6 +59,7 @@ pub fn render(app: &mut App, frame: &mut Frame) {
                     color: Color::Red,
                 });
                 */
-            }), frame.size());
-
+            }),
+        frame.size(),
+    );
 }

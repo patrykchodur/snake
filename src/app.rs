@@ -1,6 +1,6 @@
+use color_eyre::eyre::OptionExt;
 /// Application result type.
 pub use color_eyre::Result as AppResult;
-use color_eyre::eyre::OptionExt;
 
 #[derive(Debug)]
 pub enum SnakeDirection {
@@ -32,7 +32,7 @@ impl Default for App {
             is_alive: true,
             map_size: (50, 50),
             snake_direction: SnakeDirection::Left,
-            snake_points: vec!((25, 25), (26, 25)),
+            snake_points: vec![(25, 25), (26, 25)],
         }
     }
 }
@@ -45,7 +45,10 @@ impl App {
 
     /// Handles the tick event of the terminal.
     pub fn tick(&mut self) -> AppResult<()> {
-        let current_head = self.snake_points.first().ok_or_eyre("The snake is empty!")?;
+        let current_head = self
+            .snake_points
+            .first()
+            .ok_or_eyre("The snake is empty!")?;
 
         // Calculate next point of snake
         let next_head = match self.snake_direction {
@@ -65,7 +68,6 @@ impl App {
         self.snake_points.pop().ok_or_eyre("Some internal error")?;
 
         Ok(())
-
     }
 
     /// Set running to false to quit the application.

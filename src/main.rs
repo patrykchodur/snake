@@ -1,10 +1,10 @@
+use ratatui::backend::CrosstermBackend;
+use ratatui::Terminal;
 use snake::app::{App, AppResult};
 use snake::event::{Event, EventHandler};
 use snake::handler::handle_key_events;
 use snake::tui::Tui;
 use std::io;
-use ratatui::backend::CrosstermBackend;
-use ratatui::Terminal;
 
 fn main() -> AppResult<()> {
     // Create an application.
@@ -25,8 +25,8 @@ fn main() -> AppResult<()> {
         match tui.events.next()? {
             Event::Tick => app.tick()?,
             Event::Key(key_event) => handle_key_events(key_event, &mut app)?,
-            Event::Mouse(_) => { }
-            Event::Resize(_, _) => { }
+            Event::Mouse(_) => {}
+            Event::Resize(_, _) => {}
         }
     }
 
