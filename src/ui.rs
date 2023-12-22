@@ -1,3 +1,4 @@
+use log::debug;
 use ratatui::{
     style::Color,
     symbols::Marker,
@@ -34,20 +35,32 @@ pub fn render(app: &mut App, frame: &mut Frame) {
         frame.size(),
     )
     */
-    let points: Vec<(f64, f64)> = app
+
+    // Unfortunately we have to set the app size here,
+    // because that's the only place we can know the true size
+    let screen_size = (
+        frame.size().width as usize - 2,
+        (frame.size().height as usize - 2) * 2,
+    );
+    app.set_screen_size(screen_size)
+        .expect("Couldn't set the screen_size in render function");
+
+    // calculate the snake points
+    let snake_points: Vec<(f64, f64)> = app
         .snake_points
         .iter()
         .map(|point| (point.0 as f64, point.1 as f64))
         .collect();
+
     frame.render_widget(
         Canvas::default()
             .block(Block::default().borders(Borders::ALL).title("Snake"))
             .marker(Marker::HalfBlock)
-            .x_bounds([0.0, 50.0])
-            .y_bounds([0.0, 50.0])
+            .x_bounds([0.0, screen_size.0 as f64])
+            .y_bounds([0.0, screen_size.1 as f64])
             .paint(|ctx| {
                 ctx.draw(&Points {
-                    coords: &points,
+                    coords: &snake_points,
                     color: Color::Red,
                 });
                 /*
@@ -62,4 +75,5 @@ pub fn render(app: &mut App, frame: &mut Frame) {
             }),
         frame.size(),
     );
+    debug!("Frame size: {:?}", frame.size());
 }

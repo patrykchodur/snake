@@ -7,6 +7,7 @@ use snake::tui::Tui;
 use std::io;
 
 fn main() -> AppResult<()> {
+    log4rs::init_file("config/log4rs.yaml", Default::default()).unwrap();
     // Create an application.
     let mut app = App::new();
 

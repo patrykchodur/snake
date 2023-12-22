@@ -32,7 +32,17 @@ impl Default for App {
             is_alive: true,
             map_size: (50, 50),
             snake_direction: SnakeDirection::Left,
-            snake_points: vec![(25, 25), (26, 25)],
+            snake_points: vec![
+                (25, 25),
+                (26, 25),
+                (27, 25),
+                (28, 25),
+                (29, 25),
+                (30, 25),
+                (31, 25),
+                (32, 25),
+                (33, 25),
+            ],
         }
     }
 }
@@ -78,6 +88,11 @@ impl App {
 
     pub fn change_direction(&mut self, new_direction: SnakeDirection) -> AppResult<()> {
         self.snake_direction = new_direction;
+        Ok(())
+    }
+
+    pub fn set_screen_size(&mut self, (width, height): (usize, usize)) -> AppResult<()> {
+        self.map_size = (width as usize, height as usize);
         Ok(())
     }
 }
