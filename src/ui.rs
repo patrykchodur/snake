@@ -52,6 +52,18 @@ pub fn render(app: &mut App, frame: &mut Frame) {
         .map(|point| (point.0 as f64, point.1 as f64))
         .collect();
 
+    let mut eaten_fruit_points: Vec<(f64, f64)> = Vec::new();
+    for point in &app.snake_points {
+        if point.2 {
+            eaten_fruit_points.push((point.0 as f64, point.1 as f64));
+        }
+    }
+
+    let mut uneaten_fruit_points: Vec<(f64, f64)> = Vec::new();
+    if let Some(uneaten_fruit) = app.uneaten_fruit {
+        uneaten_fruit_points.push((uneaten_fruit.0 as f64, uneaten_fruit.1 as f64));
+    }
+
     frame.render_widget(
         Canvas::default()
             .block(Block::default().borders(Borders::ALL).title("Snake"))
@@ -63,6 +75,20 @@ pub fn render(app: &mut App, frame: &mut Frame) {
                     coords: &snake_points,
                     color: Color::Red,
                 });
+                debug!("Snake points: {:?}", snake_points);
+                if !uneaten_fruit_points.is_empty() {
+                    ctx.draw(&Points {
+                        coords: &uneaten_fruit_points,
+                        color: Color::Blue,
+                    });
+                    debug!("We have some uneaten_fruit! {:?}", uneaten_fruit_points);
+                }
+                if !eaten_fruit_points.is_empty() {
+                    ctx.draw(&Points {
+                        coords: &eaten_fruit_points,
+                        color: Color::Green,
+                    });
+                }
                 /*
                 ctx.draw(&Line {
                     x1: 10.0,
@@ -75,5 +101,4 @@ pub fn render(app: &mut App, frame: &mut Frame) {
             }),
         frame.size(),
     );
-    debug!("Frame size: {:?}", frame.size());
 }
