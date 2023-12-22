@@ -1,6 +1,7 @@
 use color_eyre::eyre::OptionExt;
 /// Application result type.
 pub use color_eyre::Result as AppResult;
+use rand::Rng;
 
 #[derive(Debug, Copy, Clone)]
 pub enum SnakeDirection {
@@ -13,15 +14,14 @@ pub enum SnakeDirection {
 impl SnakeDirection {
     fn is_opposite(&self, other: &SnakeDirection) -> bool {
         match (self, other) {
-            (SnakeDirection::Left, SnakeDirection::Right) | (SnakeDirection::Right, SnakeDirection::Left) => true,
-            (SnakeDirection::Up, SnakeDirection::Down) | (SnakeDirection::Down, SnakeDirection::Up) => true,
+            (SnakeDirection::Left, SnakeDirection::Right)
+            | (SnakeDirection::Right, SnakeDirection::Left) => true,
+            (SnakeDirection::Up, SnakeDirection::Down)
+            | (SnakeDirection::Down, SnakeDirection::Up) => true,
             _ => false,
         }
     }
 }
-
-
-
 
 /// Application.
 #[derive(Debug)]
@@ -99,7 +99,10 @@ impl App {
         };
 
         // Get the current back of the snake, which we plan to remove
-        let current_back = self.snake_points.last_mut().ok_or_eyre("There's no last element of snake")?;
+        let current_back = self
+            .snake_points
+            .last_mut()
+            .ok_or_eyre("There's no last element of snake")?;
 
         // If the current back is a pixel with a fruit we don't remove it
         if current_back.2 {
@@ -116,7 +119,11 @@ impl App {
         }
         // Add new point to the snake vector
         let new_head_is_a_fruit = self.uneaten_fruit == Some(next_head);
-        self.snake_points.insert(0, (next_head.0, next_head.1, new_head_is_a_fruit));
+        self.snake_points
+            .insert(0, (next_head.0, next_head.1, new_head_is_a_fruit));
+        if new_head_is_a_fruit {
+            self.spawn_new_fruit()?;
+        }
 
         Ok(())
     }
@@ -137,6 +144,30 @@ impl App {
 
     pub fn set_screen_size(&mut self, (width, height): (usize, usize)) -> AppResult<()> {
         self.map_size = (width as usize, height as usize);
+        Ok(())
+    }
+
+    fn spawn_new_fruit(&mut self) -> AppResult<()> {
+        // Generate a random point that is not in the snake
+        let mut rng = rand::thread_rng();
+        let snake_points = &self.snake_points;
+        let (map_width, map_height) = self.map_size;
+
+        // This is dumb implementation
+        let mut x;
+        let mut y;
+        loop {
+            x = rng.gen_range(0..map_width);
+            y = rng.gen_range(0..map_height);
+            if !snake_points
+                .iter()
+                .any(|snake_point| snake_point.0 == x && snake_point.1 == y)
+            {
+                break;
+            }
+        }
+
+        self.uneaten_fruit = Some((x, y));
         Ok(())
     }
 }

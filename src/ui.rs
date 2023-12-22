@@ -1,4 +1,3 @@
-use log::debug;
 use ratatui::{
     style::Color,
     symbols::Marker,
@@ -75,13 +74,11 @@ pub fn render(app: &mut App, frame: &mut Frame) {
                     coords: &snake_points,
                     color: Color::Red,
                 });
-                debug!("Snake points: {:?}", snake_points);
                 if !uneaten_fruit_points.is_empty() {
                     ctx.draw(&Points {
                         coords: &uneaten_fruit_points,
                         color: Color::Blue,
                     });
-                    debug!("We have some uneaten_fruit! {:?}", uneaten_fruit_points);
                 }
                 if !eaten_fruit_points.is_empty() {
                     ctx.draw(&Points {
@@ -89,15 +86,6 @@ pub fn render(app: &mut App, frame: &mut Frame) {
                         color: Color::Green,
                     });
                 }
-                /*
-                ctx.draw(&Line {
-                    x1: 10.0,
-                    y1: 10.0,
-                    x2: 40.0,
-                    y2: 40.0,
-                    color: Color::Red,
-                });
-                */
             }),
         frame.size(),
     );
