@@ -10,9 +10,7 @@ cargo run
 ```
 
 ## TODOs
-- Fix overlaping when snake goes out of the map
-    - Wrap around map bounds
-    - Move items when map resized
+- Move items when map resized
 - Don't use the full terminal for playing
     - Add some UI info on the right
 - Add option to restart the game
@@ -20,3 +18,4 @@ cargo run
 - Add some options like map size or speed
 - Change colors
 - Add next move to array, so we can have a few in a row
+- Create Snake class with methods like `contains` etc.
