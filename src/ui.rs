@@ -1,8 +1,8 @@
 use ratatui::{
-    prelude::Alignment,
+    prelude::*,
     style::Color,
     symbols::Marker,
-    widgets::{canvas::*, Block, BorderType, Borders},
+    widgets::{canvas::*, Block, BorderType, Borders, Clear, Paragraph},
     Frame,
 };
 
@@ -98,6 +98,21 @@ pub fn render(app: &mut App, frame: &mut Frame) {
             }),
         frame.size(),
     );
+
+    if !app.is_alive {
+        let block = Block::default()
+            .borders(Borders::ALL)
+            .border_type(BorderType::Rounded);
+        let text = vec![
+            ratatui::prelude::Line::from("You've lost!"),
+            ratatui::prelude::Line::from(""),
+            ratatui::prelude::Line::from("Press 'q' to exit"),
+        ];
+        let area = centered_rect(60, 20, frame.size());
+        let paragraph = Paragraph::new(text).alignment(Alignment::Center);
+        frame.render_widget(Clear, area);
+        frame.render_widget(paragraph.block(block), area);
+    }
 }
 
 pub fn render_screen_test(_app: &mut App, frame: &mut Frame) {
@@ -128,4 +143,26 @@ pub fn render_screen_test(_app: &mut App, frame: &mut Frame) {
             }),
         frame.size(),
     );
+
+}
+
+/// helper function to create a centered rect using up certain percentage of the available rect `r`
+fn centered_rect(percent_x: u16, percent_y: u16, r: Rect) -> Rect {
+    let popup_layout = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([
+            Constraint::Percentage((100 - percent_y) / 2),
+            Constraint::Percentage(percent_y),
+            Constraint::Percentage((100 - percent_y) / 2),
+        ])
+        .split(r);
+
+    Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([
+            Constraint::Percentage((100 - percent_x) / 2),
+            Constraint::Percentage(percent_x),
+            Constraint::Percentage((100 - percent_x) / 2),
+        ])
+        .split(popup_layout[1])[1]
 }

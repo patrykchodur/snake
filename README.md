@@ -13,8 +13,6 @@ cargo run
 - Move items when map resized
 - Don't use the full terminal for playing
     - Add some UI info on the right
-- Add option to restart the game
-    - Take a look how tabs are done in ratatui tutorials for menu
 - Add some options like map size or speed
 - Change colors
 - Add next move to array, so we can have a few in a row
