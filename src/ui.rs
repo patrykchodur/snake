@@ -143,7 +143,6 @@ pub fn render_screen_test(_app: &mut App, frame: &mut Frame) {
             }),
         frame.size(),
     );
-
 }
 
 /// helper function to create a centered rect using up certain percentage of the available rect `r`

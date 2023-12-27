@@ -15,5 +15,4 @@ cargo run
     - Add some UI info on the right
 - Add some options like map size or speed
 - Change colors
-- Add next move to array, so we can have a few in a row
 - Create Snake class with methods like `contains` etc.

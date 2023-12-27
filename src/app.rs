@@ -12,7 +12,7 @@ pub enum SnakeDirection {
 }
 
 impl SnakeDirection {
-    fn is_opposite(&self, other: &SnakeDirection) -> bool {
+    fn is_opposite(self, other: SnakeDirection) -> bool {
         match (self, other) {
             (SnakeDirection::Left, SnakeDirection::Right)
             | (SnakeDirection::Right, SnakeDirection::Left) => true,
@@ -20,6 +20,20 @@ impl SnakeDirection {
             | (SnakeDirection::Down, SnakeDirection::Up) => true,
             _ => false,
         }
+    }
+
+    fn is_same(self, other: SnakeDirection) -> bool {
+        match (self, other) {
+            (SnakeDirection::Left, SnakeDirection::Left)
+            | (SnakeDirection::Right, SnakeDirection::Right)
+            | (SnakeDirection::Up, SnakeDirection::Up)
+            | (SnakeDirection::Down, SnakeDirection::Down) => true,
+            _ => false,
+        }
+    }
+
+    fn is_same_axis(self, other: SnakeDirection) -> bool {
+        self.is_opposite(other) || self.is_same(other)
     }
 }
 
@@ -38,7 +52,7 @@ pub struct App {
     pub snake_direction: SnakeDirection,
     /// Next direction of the snake.
     /// We store it here to change it only during ticks
-    next_direction: SnakeDirection,
+    next_direction: Vec<SnakeDirection>,
     /// The vector holding existing points of the snake
     /// The boolean indicates whether it's an eaten fruit
     pub snake_points: Vec<(isize, isize, bool)>,
@@ -54,7 +68,7 @@ impl Default for App {
             is_alive: true,
             map_size: (50, 50),
             snake_direction: SnakeDirection::Left,
-            next_direction: SnakeDirection::Left,
+            next_direction: Vec::new(),
             snake_points: vec![
                 (25, 25, false),
                 (26, 25, false),
@@ -85,7 +99,12 @@ impl App {
             return Ok(());
         }
 
-        self.snake_direction = self.next_direction;
+        if !self.next_direction.is_empty() {
+            self.snake_direction = self
+                .next_direction
+                .pop()
+                .ok_or_eyre("Next direction vector was empty")?;
+        }
 
         let next_head = self.get_next_snake_head()?;
 
@@ -139,9 +158,18 @@ impl App {
 
     /// Change the direction of the snake from the event handler
     pub fn change_direction(&mut self, new_direction: SnakeDirection) -> AppResult<()> {
+        let last_scheduled_direction = if self.next_direction.is_empty() {
+            self.snake_direction
+        } else {
+            *self
+                .next_direction
+                .last()
+                .ok_or_eyre("There's no saved next direction")?
+        };
+
         // We don't change the actual direction here. It's done in the `tick` function instead
-        if !self.snake_direction.is_opposite(&new_direction) {
-            self.next_direction = new_direction;
+        if !last_scheduled_direction.is_same_axis(new_direction) {
+            self.next_direction.insert(0, new_direction);
         }
         Ok(())
     }
