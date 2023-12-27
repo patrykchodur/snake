@@ -104,11 +104,12 @@ pub fn render(app: &mut App, frame: &mut Frame) {
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded);
         let text = vec![
+            ratatui::prelude::Line::from(""),
             ratatui::prelude::Line::from("You've lost!"),
             ratatui::prelude::Line::from(""),
             ratatui::prelude::Line::from("Press 'q' to exit"),
         ];
-        let area = centered_rect(60, 20, frame.size());
+        let area = centered_rect(30, 7, frame.size());
         let paragraph = Paragraph::new(text).alignment(Alignment::Center);
         frame.render_widget(Clear, area);
         frame.render_widget(paragraph.block(block), area);
@@ -145,23 +146,16 @@ pub fn render_screen_test(_app: &mut App, frame: &mut Frame) {
     );
 }
 
-/// helper function to create a centered rect using up certain percentage of the available rect `r`
-fn centered_rect(percent_x: u16, percent_y: u16, r: Rect) -> Rect {
-    let popup_layout = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Percentage((100 - percent_y) / 2),
-            Constraint::Percentage(percent_y),
-            Constraint::Percentage((100 - percent_y) / 2),
-        ])
-        .split(r);
-
-    Layout::default()
-        .direction(Direction::Horizontal)
-        .constraints([
-            Constraint::Percentage((100 - percent_x) / 2),
-            Constraint::Percentage(percent_x),
-            Constraint::Percentage((100 - percent_x) / 2),
-        ])
-        .split(popup_layout[1])[1]
+/// helper function to create a centered rect using up fixed width inside rectangle `r`
+fn centered_rect(width: u16, height: u16, r: Rect) -> Rect {
+    let horizontal_margin = r.width - width;
+    let vertical_margin = r.height - height;
+    let left_horizontal_margin = horizontal_margin/2;
+    let left_vertical_margin = vertical_margin/2;
+    Rect {
+        x: r.x + left_horizontal_margin,
+        y: r.y + left_vertical_margin,
+        width,
+        height,
+    }
 }
