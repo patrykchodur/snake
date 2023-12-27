@@ -38,12 +38,17 @@ pub fn render(app: &mut App, frame: &mut Frame) {
 
     // Unfortunately we have to set the app size here,
     // because that's the only place we can know the true size
-    let screen_size = (
+    let screen_size = app.map_size;
+    /* (
         frame.size().width as usize - 2,
         (frame.size().height as usize - 2) * 2,
     );
     app.set_screen_size(screen_size)
         .expect("Couldn't set the screen_size in render function");
+                      */
+
+    let ui_block_size = calculate_ui_block_size(screen_size, true);
+    let area = centered_rect(ui_block_size.0, ui_block_size.1, frame.size());
 
     // calculate the snake points
     let snake_points: Vec<(f64, f64)> = app
@@ -96,7 +101,7 @@ pub fn render(app: &mut App, frame: &mut Frame) {
                     });
                 }
             }),
-        frame.size(),
+        area,
     );
 
     if !app.is_alive {
@@ -116,12 +121,8 @@ pub fn render(app: &mut App, frame: &mut Frame) {
     }
 }
 
-pub fn render_screen_test(_app: &mut App, frame: &mut Frame) {
-    let screen_size = (
-        frame.size().width as usize - 2,
-        (frame.size().height as usize - 2) * 2,
-    );
-
+pub fn render_screen_test(app: &mut App, frame: &mut Frame) {
+    let screen_size = app.map_size;
     let mut test_points = Vec::new();
     for x in 0..screen_size.0 {
         for y in 0..screen_size.1 {
@@ -130,11 +131,13 @@ pub fn render_screen_test(_app: &mut App, frame: &mut Frame) {
             }
         }
     }
+    let ui_block_size = calculate_ui_block_size(screen_size, true);
+    let area = centered_rect(ui_block_size.0, ui_block_size.1, frame.size());
     frame.render_widget(
         Canvas::default()
             .block(Block::default().borders(Borders::ALL).title("Snake"))
             .marker(Marker::HalfBlock)
-            .x_bounds([0.0 - 1.0, -1.0 + screen_size.0 as f64])
+            .x_bounds([-1.0, screen_size.0 as f64 - 1.0])
             .y_bounds([0.0, screen_size.1 as f64])
             .paint(|ctx| {
                 ctx.draw(&Points {
@@ -142,20 +145,72 @@ pub fn render_screen_test(_app: &mut App, frame: &mut Frame) {
                     color: Color::Red,
                 });
             }),
-        frame.size(),
+        area,
     );
+}
+
+fn calculate_ui_block_size(map_size: (isize, isize), borders: bool) -> (u16, u16) {
+    assert!(map_size.0 > 0 && map_size.1 > 0);
+    let border_size = if borders { 2 } else { 0 };
+    (
+        map_size.0 as u16 + border_size,
+        ((map_size.1 as u16 + 1) / 2) + border_size,
+    )
 }
 
 /// helper function to create a centered rect using up fixed width inside rectangle `r`
 fn centered_rect(width: u16, height: u16, r: Rect) -> Rect {
     let horizontal_margin = r.width - width;
     let vertical_margin = r.height - height;
-    let left_horizontal_margin = horizontal_margin/2;
-    let left_vertical_margin = vertical_margin/2;
+    let left_horizontal_margin = horizontal_margin / 2;
+    let left_vertical_margin = vertical_margin / 2;
     Rect {
         x: r.x + left_horizontal_margin,
         y: r.y + left_vertical_margin,
         width,
         height,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn check_ui_block_size() {
+        // Regular example: square map and borders
+        let map_size = (50, 50);
+        let block_size = (52, 27);
+        assert_eq!(calculate_ui_block_size(map_size, true), block_size);
+
+        // The height is not even - we need additional block
+        // and one pixel will not be used
+        let map_size = (50, 49);
+        let block_size = (52, 27);
+        assert_eq!(calculate_ui_block_size(map_size, true), block_size);
+
+        // Example without borders
+        let map_size = (50, 50);
+        let block_size = (50, 25);
+        assert_eq!(calculate_ui_block_size(map_size, false), block_size);
+
+        // Without borders and uneven height
+        let map_size = (50, 50);
+        let block_size = (50, 25);
+        assert_eq!(calculate_ui_block_size(map_size, false), block_size);
+    }
+
+    #[test]
+    #[should_panic]
+    fn calculate_ui_block_size_negative_x() {
+        let map_size = (-50, 50);
+        calculate_ui_block_size(map_size, false);
+    }
+
+    #[test]
+    #[should_panic]
+    fn calculate_ui_block_size_negative_y() {
+        let map_size = (50, -50);
+        calculate_ui_block_size(map_size, false);
     }
 }

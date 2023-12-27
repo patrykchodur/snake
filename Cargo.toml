@@ -4,6 +4,7 @@ version = "0.1.1"
 authors = ["Patryk Chodur <patrykchodur@icloud.com>"]
 license = "MIT"
 edition = "2021"
+default-run = "snake"
 
 [dependencies]
 color-eyre = "0.6.2"
