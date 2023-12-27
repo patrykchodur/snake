@@ -13,5 +13,4 @@ cargo run
 - Move items when map resized
 - Add some UI info on the right
 - Add option to change speed
-- Change colors
 - Create Snake class with methods like `contains` etc.

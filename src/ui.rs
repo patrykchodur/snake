@@ -86,18 +86,18 @@ pub fn render(app: &mut App, frame: &mut Frame) {
             .paint(|ctx| {
                 ctx.draw(&Points {
                     coords: &snake_points,
-                    color: Color::Red,
+                    color: Color::Green,
                 });
                 if !uneaten_fruit_points.is_empty() {
                     ctx.draw(&Points {
                         coords: &uneaten_fruit_points,
-                        color: Color::Blue,
+                        color: Color::Red,
                     });
                 }
                 if !eaten_fruit_points.is_empty() {
                     ctx.draw(&Points {
                         coords: &eaten_fruit_points,
-                        color: Color::Green,
+                        color: Color::Yellow,
                     });
                 }
             }),
