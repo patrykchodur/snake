@@ -46,6 +46,8 @@ pub struct App {
     pub wrap: bool,
     /// Is the snake alive?
     pub is_alive: bool,
+    /// The score - number of eaten fruits
+    pub score: i32,
     /// The number of points in the map
     pub map_size: (isize, isize),
     /// The direction in which the snake is moving
@@ -66,6 +68,7 @@ impl Default for App {
             running: true,
             wrap: true,
             is_alive: true,
+            score: 0,
             map_size: (0, 0),
             snake_direction: SnakeDirection::Left,
             next_direction: Vec::new(),
@@ -82,8 +85,10 @@ impl App {
     }
 
     pub fn from_size(map_size: (isize, isize)) -> Self {
-        let snake_points = vec![(map_size.0 / 2, map_size.1 / 2, false),
-            (map_size.0 / 2, map_size.1 / 2 + 1, false)];
+        let snake_points = vec![
+            (map_size.0 / 2, map_size.1 / 2, false),
+            (map_size.0 / 2, map_size.1 / 2 + 1, false),
+        ];
         let mut app = Self {
             map_size,
             snake_points,
@@ -145,6 +150,7 @@ impl App {
             .insert(0, (next_head.0, next_head.1, new_head_is_a_fruit));
         if new_head_is_a_fruit {
             self.spawn_new_fruit()?;
+            self.score += 1;
         }
 
         Ok(())

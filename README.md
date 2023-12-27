@@ -15,4 +15,3 @@ cargo run
 - Add option to change speed
 - Change colors
 - Create Snake class with methods like `contains` etc.
-- Add score

@@ -112,9 +112,11 @@ pub fn render(app: &mut App, frame: &mut Frame) {
             ratatui::prelude::Line::from(""),
             ratatui::prelude::Line::from("You've lost!"),
             ratatui::prelude::Line::from(""),
+            ratatui::prelude::Line::from(format!("Score: {}", app.score)),
+            ratatui::prelude::Line::from(""),
             ratatui::prelude::Line::from("Press 'q' to exit"),
         ];
-        let area = centered_rect(30, 7, frame.size());
+        let area = centered_rect(30, 9, frame.size());
         let paragraph = Paragraph::new(text).alignment(Alignment::Center);
         frame.render_widget(Clear, area);
         frame.render_widget(paragraph.block(block), area);
@@ -160,6 +162,7 @@ fn calculate_ui_block_size(map_size: (isize, isize), borders: bool) -> (u16, u16
 
 /// helper function to create a centered rect using up fixed width inside rectangle `r`
 fn centered_rect(width: u16, height: u16, r: Rect) -> Rect {
+    assert!(width <= r.width && height <= r.height);
     let horizontal_margin = r.width - width;
     let vertical_margin = r.height - height;
     let left_horizontal_margin = horizontal_margin / 2;
