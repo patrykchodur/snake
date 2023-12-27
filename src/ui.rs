@@ -1,7 +1,8 @@
 use ratatui::{
+    prelude::Alignment,
     style::Color,
     symbols::Marker,
-    widgets::{canvas::*, Block, Borders},
+    widgets::{canvas::*, Block, BorderType, Borders},
     Frame,
 };
 
@@ -65,11 +66,17 @@ pub fn render(app: &mut App, frame: &mut Frame) {
 
     frame.render_widget(
         Canvas::default()
-            .block(Block::default().borders(Borders::ALL).title("Snake"))
+            .block(
+                Block::default()
+                    .borders(Borders::ALL)
+                    .title("Snake")
+                    .title_alignment(Alignment::Center)
+                    .border_type(BorderType::Rounded),
+            )
             .marker(Marker::HalfBlock)
             // Not sure about the reason for -1. Maybe it's a library bug or whatever
             // but it's related to borders
-            .x_bounds([0.0 - 1.0 ,screen_size.0 as f64 - 1.0])
+            .x_bounds([0.0 - 1.0, screen_size.0 as f64 - 1.0])
             .y_bounds([0.0, screen_size.1 as f64])
             .paint(|ctx| {
                 ctx.draw(&Points {
@@ -112,7 +119,7 @@ pub fn render_screen_test(_app: &mut App, frame: &mut Frame) {
             .block(Block::default().borders(Borders::ALL).title("Snake"))
             .marker(Marker::HalfBlock)
             .x_bounds([0.0 - 1.0, -1.0 + screen_size.0 as f64])
-            .y_bounds([0.0 , screen_size.1 as f64])
+            .y_bounds([0.0, screen_size.1 as f64])
             .paint(|ctx| {
                 ctx.draw(&Points {
                     coords: &test_points,
