@@ -66,23 +66,11 @@ impl Default for App {
             running: true,
             wrap: true,
             is_alive: true,
-            map_size: (50, 50),
+            map_size: (0, 0),
             snake_direction: SnakeDirection::Left,
             next_direction: Vec::new(),
-            snake_points: vec![
-                (25, 25, false),
-                (26, 25, false),
-                /*
-                (27, 25, false),
-                (28, 25, false),
-                (29, 25, false),
-                (30, 25, false),
-                (31, 25, false),
-                (32, 25, false),
-                (33, 25, false),
-                */
-            ],
-            uneaten_fruit: Some((10, 10)),
+            snake_points: Vec::new(),
+            uneaten_fruit: None,
         }
     }
 }
@@ -90,7 +78,19 @@ impl Default for App {
 impl App {
     /// Constructs a new instance of [`App`].
     pub fn new() -> Self {
-        Self::default()
+        Default::default()
+    }
+
+    pub fn from_size(map_size: (isize, isize)) -> Self {
+        let snake_points = vec![(map_size.0 / 2, map_size.1 / 2, false),
+            (map_size.0 / 2, map_size.1 / 2 + 1, false)];
+        let mut app = Self {
+            map_size,
+            snake_points,
+            ..Default::default()
+        };
+        let _ = app.spawn_new_fruit();
+        app
     }
 
     /// Handles the tick event of the terminal.

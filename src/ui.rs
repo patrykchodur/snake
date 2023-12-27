@@ -213,4 +213,49 @@ mod tests {
         let map_size = (50, -50);
         calculate_ui_block_size(map_size, false);
     }
+
+    #[test]
+    fn check_centered_rect() {
+        let my_block = Rect {
+            x: 0,
+            y: 0,
+            height: 100,
+            width: 100,
+        };
+
+        let my_inner_block = Rect {
+            x: 25,
+            y: 25,
+            height: 50,
+            width: 50,
+        };
+
+        assert_eq!(centered_rect(50, 50, my_block), my_inner_block);
+    }
+
+    #[test]
+    #[should_panic]
+    fn centered_rect_invalid_width() {
+        let my_block = Rect {
+            x: 0,
+            y: 0,
+            height: 100,
+            width: 100,
+        };
+
+        centered_rect(150, 50, my_block);
+    }
+
+    #[test]
+    #[should_panic]
+    fn centered_rect_invalid_height() {
+        let my_block = Rect {
+            x: 0,
+            y: 0,
+            height: 100,
+            width: 100,
+        };
+
+        centered_rect(50, 150, my_block);
+    }
 }

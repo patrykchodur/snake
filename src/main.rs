@@ -8,8 +8,10 @@ use std::io;
 
 fn main() -> AppResult<()> {
     log4rs::init_file("config/log4rs.yaml", Default::default()).unwrap();
+
+    let map_size = (20, 20);
     // Create an application.
-    let mut app = App::new();
+    let mut app = App::from_size(map_size);
 
     // Initialize the terminal user interface.
     let backend = CrosstermBackend::new(io::stderr());

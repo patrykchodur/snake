@@ -11,8 +11,8 @@ cargo run
 
 ## TODOs
 - Move items when map resized
-- Don't use the full terminal for playing
-    - Add some UI info on the right
-- Add some options like map size or speed
+- Add some UI info on the right
+- Add option to change speed
 - Change colors
 - Create Snake class with methods like `contains` etc.
+- Add score

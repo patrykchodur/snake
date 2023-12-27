@@ -9,7 +9,8 @@ use std::io;
 fn main() -> AppResult<()> {
     log4rs::init_file("config/log4rs.yaml", Default::default()).unwrap();
     // Create an application.
-    let mut app = App::new();
+    let map_size = (20, 20);
+    let mut app = App::from_size(map_size);
     let screen_size = app.map_size;
     let mut test_points = Vec::new();
     for x in 0..screen_size.0 {
