@@ -20,5 +20,3 @@ cargo run
 - Add some options like map size or speed
 - Change colors
 - Add next move to array, so we can have a few in a row
-- There was some bug when fruit was on the left edge of the screen,
-  by which the fruit was displayed in the wrong pixel, the one to the right.

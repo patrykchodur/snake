@@ -67,7 +67,9 @@ pub fn render(app: &mut App, frame: &mut Frame) {
         Canvas::default()
             .block(Block::default().borders(Borders::ALL).title("Snake"))
             .marker(Marker::HalfBlock)
-            .x_bounds([0.0, screen_size.0 as f64])
+            // Not sure about the reason for -1. Maybe it's a library bug or whatever
+            // but it's related to borders
+            .x_bounds([0.0 - 1.0 ,screen_size.0 as f64 - 1.0])
             .y_bounds([0.0, screen_size.1 as f64])
             .paint(|ctx| {
                 ctx.draw(&Points {
@@ -86,6 +88,36 @@ pub fn render(app: &mut App, frame: &mut Frame) {
                         color: Color::Green,
                     });
                 }
+            }),
+        frame.size(),
+    );
+}
+
+pub fn render_screen_test(_app: &mut App, frame: &mut Frame) {
+    let screen_size = (
+        frame.size().width as usize - 2,
+        (frame.size().height as usize - 2) * 2,
+    );
+
+    let mut test_points = Vec::new();
+    for x in 0..screen_size.0 {
+        for y in 0..screen_size.1 {
+            if x % 2 == y % 2 {
+                test_points.push((x as f64, y as f64));
+            }
+        }
+    }
+    frame.render_widget(
+        Canvas::default()
+            .block(Block::default().borders(Borders::ALL).title("Snake"))
+            .marker(Marker::HalfBlock)
+            .x_bounds([0.0 - 1.0, -1.0 + screen_size.0 as f64])
+            .y_bounds([0.0 , screen_size.1 as f64])
+            .paint(|ctx| {
+                ctx.draw(&Points {
+                    coords: &test_points,
+                    color: Color::Red,
+                });
             }),
         frame.size(),
     );
