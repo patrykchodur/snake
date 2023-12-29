@@ -27,6 +27,9 @@ pub fn handle_key_events(key_event: KeyEvent, app: &mut App) -> AppResult<()> {
         KeyCode::Down => {
             app.change_direction(SnakeDirection::Down)?;
         }
+        KeyCode::Char('r') => {
+            app.restart_if_lost()?;
+        }
         // Other handlers you could add here.
         _ => {}
     }

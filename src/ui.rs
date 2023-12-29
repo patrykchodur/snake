@@ -114,9 +114,9 @@ pub fn render(app: &mut App, frame: &mut Frame) {
             ratatui::prelude::Line::from(""),
             ratatui::prelude::Line::from(format!("Score: {}", app.score)),
             ratatui::prelude::Line::from(""),
-            ratatui::prelude::Line::from("Press 'q' to exit"),
+            ratatui::prelude::Line::from("Press 'q' to exit, 'r' to restart"),
         ];
-        let area = centered_rect(30, 9, frame.size());
+        let area = centered_rect(38, 9, frame.size());
         let paragraph = Paragraph::new(text).alignment(Alignment::Center);
         frame.render_widget(Clear, area);
         frame.render_widget(paragraph.block(block), area);

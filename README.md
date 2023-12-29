@@ -14,3 +14,4 @@ cargo run
 - Add some UI info on the right
 - Add option to change speed
 - Create Snake class with methods like `contains` etc.
+- Add scaling of board

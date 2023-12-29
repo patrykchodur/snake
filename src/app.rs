@@ -186,6 +186,16 @@ impl App {
         Ok(())
     }
 
+    pub fn restart_if_lost(&mut self) -> AppResult<()> {
+        if !self.is_alive {
+            *self = Self {
+                wrap: self.wrap,
+                ..Self::from_size(self.map_size)
+            };
+        }
+        Ok(())
+    }
+
     fn spawn_new_fruit(&mut self) -> AppResult<()> {
         // Generate a random point that is not in the snake
         let mut rng = rand::thread_rng();
