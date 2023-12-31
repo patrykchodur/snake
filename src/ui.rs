@@ -13,7 +13,7 @@ pub fn render(app: &mut App, frame: &mut Frame) {
         .direction(Direction::Vertical)
         .constraints([
             Constraint::Min(app.map_size.1 as u16 * 1),
-            Constraint::Percentage(10),
+            Constraint::Max(8),
         ])
         .split(frame.size());
     board_pane::render_game_board(app, frame, layout[0]);
