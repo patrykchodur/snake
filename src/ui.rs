@@ -38,6 +38,46 @@ pub fn render(app: &mut App, frame: &mut Frame) {
 
     // Unfortunately we have to set the app size here,
     // because that's the only place we can know the true size
+    let layout = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([
+            Constraint::Min(app.map_size.1 as u16 * 2),
+            Constraint::Percentage(25),
+        ])
+        .split(frame.size());
+    render_game_board(app, frame, layout[0]);
+    render_right_panel(app, frame, layout[1]);
+}
+
+pub fn render_screen_test(app: &mut App, frame: &mut Frame) {
+    let screen_size = app.map_size;
+    let mut test_points = Vec::new();
+    for x in 0..screen_size.0 {
+        for y in 0..screen_size.1 {
+            if x % 2 == y % 2 {
+                test_points.push((x as f64, y as f64));
+            }
+        }
+    }
+    let ui_block_size = calculate_ui_block_size(screen_size, true);
+    let area = centered_rect(ui_block_size.0, ui_block_size.1, frame.size());
+    frame.render_widget(
+        Canvas::default()
+            .block(Block::default().borders(Borders::ALL).title("Snake"))
+            .marker(Marker::HalfBlock)
+            .x_bounds([-1.0, screen_size.0 as f64 - 1.0])
+            .y_bounds([0.0, screen_size.1 as f64])
+            .paint(|ctx| {
+                ctx.draw(&Points {
+                    coords: &test_points,
+                    color: Color::Red,
+                });
+            }),
+        area,
+    );
+}
+
+fn render_game_board(app: &App, frame: &mut Frame, area: Rect) {
     let screen_size = app.map_size;
     /* (
         frame.size().width as usize - 2,
@@ -48,7 +88,7 @@ pub fn render(app: &mut App, frame: &mut Frame) {
                       */
 
     let ui_block_size = calculate_ui_block_size(screen_size, true);
-    let area = centered_rect(ui_block_size.0, ui_block_size.1, frame.size());
+    let board_area = centered_rect(ui_block_size.0, ui_block_size.1, area);
 
     // calculate the snake points
     let snake_points: Vec<(f64, f64)> = app
@@ -101,7 +141,7 @@ pub fn render(app: &mut App, frame: &mut Frame) {
                     });
                 }
             }),
-        area,
+        board_area,
     );
 
     if !app.is_alive {
@@ -116,39 +156,15 @@ pub fn render(app: &mut App, frame: &mut Frame) {
             ratatui::prelude::Line::from(""),
             ratatui::prelude::Line::from("Press 'q' to exit, 'r' to restart"),
         ];
-        let area = centered_rect(38, 9, frame.size());
+        let area = centered_rect(38, 9, area);
         let paragraph = Paragraph::new(text).alignment(Alignment::Center);
         frame.render_widget(Clear, area);
         frame.render_widget(paragraph.block(block), area);
     }
 }
 
-pub fn render_screen_test(app: &mut App, frame: &mut Frame) {
-    let screen_size = app.map_size;
-    let mut test_points = Vec::new();
-    for x in 0..screen_size.0 {
-        for y in 0..screen_size.1 {
-            if x % 2 == y % 2 {
-                test_points.push((x as f64, y as f64));
-            }
-        }
-    }
-    let ui_block_size = calculate_ui_block_size(screen_size, true);
-    let area = centered_rect(ui_block_size.0, ui_block_size.1, frame.size());
-    frame.render_widget(
-        Canvas::default()
-            .block(Block::default().borders(Borders::ALL).title("Snake"))
-            .marker(Marker::HalfBlock)
-            .x_bounds([-1.0, screen_size.0 as f64 - 1.0])
-            .y_bounds([0.0, screen_size.1 as f64])
-            .paint(|ctx| {
-                ctx.draw(&Points {
-                    coords: &test_points,
-                    color: Color::Red,
-                });
-            }),
-        area,
-    );
+fn render_right_panel(app: &App, frame: &mut Frame, area: Rect) {
+    frame.render_widget(Paragraph::new(format!("Score: {} points", app.score)), area);
 }
 
 fn calculate_ui_block_size(map_size: (isize, isize), borders: bool) -> (u16, u16) {
