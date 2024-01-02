@@ -5,13 +5,24 @@ use ratatui::{
     widgets::{canvas::*, Block, BorderType, Borders},
 };
 
+use super::generic_popup::*;
 use super::ui_utils::*;
 use crate::app::App;
 
 pub fn render_game_board(app: &App, frame: &mut Frame, area: Rect) {
     let screen_size = app.map_size;
-    let ui_block_size = calculate_ui_block_size(screen_size, true);
-    let board_area = centered_rect(ui_block_size.0, ui_block_size.1, area);
+    // Get the size of block required for displaying map
+    // We expect the size to be non-negative. If it is, it should have been checked earlier
+    let ui_block_size =
+        calculate_ui_block_size(screen_size, true).expect("The map size is negative");
+    let board_area = match centered_rect(ui_block_size.0, ui_block_size.1, area) {
+        Ok(ba) => ba,
+        Err(_er) => {
+            // If we get an error here we can't really do anything else
+            let _ = render_popup(app, frame, vec!["Please resize the screen".into()], area);
+            return ();
+        }
+    };
 
     // calculate the snake points
     let snake_points: Vec<(f64, f64)> = app

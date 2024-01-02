@@ -3,6 +3,7 @@ use ratatui::prelude::*;
 use crate::app::App;
 
 mod board_pane;
+mod generic_popup;
 mod info_pane;
 mod lost_pane;
 mod ui_utils;
