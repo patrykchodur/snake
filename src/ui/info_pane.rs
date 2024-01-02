@@ -9,6 +9,8 @@ pub fn render_info_panel(app: &App, frame: &mut Frame, area: Rect) {
  / / / // / __/ _ \\/ _ \\_\\ \\/ _ \\/ _ `/  '_/ -_)
 /_/  \\_,_/_/ /_.__/\\___/___/_//_/\\_,_/_/\\_\\\\__/ 
 ";
-    frame.render_widget(Paragraph::new(logo).alignment(Alignment::Center), area);
+    if area.height >= 5 {
+        frame.render_widget(Paragraph::new(logo).alignment(Alignment::Center), area);
+    }
     frame.render_widget(Paragraph::new(format!("Score: {} points", app.score)).alignment(Alignment::Center), area);
 }
