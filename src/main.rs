@@ -5,11 +5,25 @@ use snake::event::{Event, EventHandler};
 use snake::handler::handle_key_events;
 use snake::tui::Tui;
 use std::io;
+use clap::Parser;
+
+/// This is a simple snake implementation in rust.
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+struct Cli {
+    /// Set width of the map.
+    #[arg(long, value_name = "WIDTH", default_value_t = 20)]
+    width: usize,
+    /// Set height of the map.
+    #[arg(long, value_name = "HEIGHT", default_value_t = 20)]
+    height: usize,
+}
 
 fn main() -> AppResult<()> {
     log4rs::init_file("config/log4rs.yaml", Default::default()).unwrap();
 
-    let map_size = (20, 20);
+    let cli = Cli::parse();
+    let map_size = (cli.width as isize, cli.height as isize);
     // Create an application.
     let mut app = App::from_size(map_size);
 
